@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="app">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Silanis Lottery</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/mbn.css" rel="stylesheet">
+        <link href="css/animate.css" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="http://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body data-ng-controller="MainCtrl">
+        <div class="splash" data-ng-cloak="">
+            <p>Loading</p>
+        </div>
+        <div class="brand animated bounceInDown">Silanis Lottery</div>
+        <!-- Navigation -->
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
+                    <a class="navbar-brand" href="#"></a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#" data-ng-click="modeChange('home')" data-ng-class="{'active-link': isActive == 'home'}">Home</a>
+                        </li>
+                        <li>
+                            <a href="#" data-ng-click="modeChange('purchase')" data-ng-class="{'active-link': isActive == 'purchase'}">Purchase</a>
+                        </li>
+                        <li>
+                            <a href="#" data-ng-click="modeChange('draw')" data-ng-class="{'active-link': isActive == 'draw'}">Draw</a>
+                        </li>
+                        <li>
+                            <a href="#" data-ng-click="modeChange('winners')" data-ng-class="{'active-link': isActive == 'winners'}">Winners</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container -->
+        </nav>
+        <div data-ng-cloak="">    
+            <div class="container">
+
+                <div class="row">
+                    <div class="box">
+                        <div data-ng-if="mode == 'home'" class="main-box animated fadeIn">
+                            <div class="col-lg-12">
+                                <hr>
+                                <h2 class="intro-text text-center animated fadeIn">Home
+                                </h2>
+                                <hr>
+                            </div>
+                        </div>
+                        <div data-ng-if="mode == 'purchase'" class="main-box animated fadeIn">
+                            <div class="col-lg-12">
+                                <hr>
+                                <h2 class="intro-text text-center animated fadeIn">Purchase
+                                </h2>
+                                <hr>
+                            </div>
+                            <form class="form-signin">
+                                <input type="text" class="form-control" id="userName" placeholder="User name" autofocus="" data-ng-model="item.userName" data-ng-required="string">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit" data-ng-click="Lottery.purchase(item)" data-ng-disabled="full == 'yes'">
+                                    Purchase
+                                </button>
+                                <div class="errorMessage animated fadeInUp text-center">       
+                                    {{errorMessage}}
+                                </div>
+                            </form>
+                            <ol>
+                                <li data-ng-repeat="items in people track by $index" class="animated fadeIn">{{items}}</li>
+                            </ol>
+                        </div>
+                        <div data-ng-if="mode == 'draw'" class="main-box animated fadeIn">
+                            <div class="col-lg-12">
+                                <hr>
+                                <h2 class="intro-text text-center animated fadeIn">Draw
+                                </h2>
+                                <hr>
+                            </div>
+                            <form class="form-signin">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit" data-ng-click="Lottery.draw()">
+                                    <span data-ng-hide="loading">
+                                        Draw 
+                                    </span>
+                                    <span data-ng-show="loading">
+                                        Drawing
+                                        <i class="fa fa-cog fa-spin"></i>
+                                    </span>
+                                </button>
+                                <div class="errorMessage animated fadeInUp text-center">       
+                                    {{drawMessage}}
+                                </div>
+                            </form>
+                        </div>
+                        <div data-ng-if="mode == 'winners'" class="main-box animated fadeIn">
+                            <div class="col-lg-12">
+                                <hr>
+                                <h2 class="intro-text text-center animated fadeIn">Winners
+                                </h2>
+                                <hr>
+                            </div>
+                            <div class="row" data-ng-show="showResult">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center animated fadeInUpBig">
+                                            <div class="winner-box">
+                                                <h2>#1</h2>
+                                                <h2>{{ result.winner1}}</h2>
+                                                <h1>{{ result.firstPrize}}$</h1>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center animated fadeInUpBig">
+                                            <div class="winner-box">
+                                                <h2>#2</h2>
+                                                <h2>{{ result.winner2}}</h2>
+                                                <h1>{{ result.secondPrize}}$</h1>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center animated fadeInUpBig">
+                                            <div class="winner-box">
+                                                <h2>#3</h2>
+                                                <h2>{{ result.winner3}}</h2>
+                                                <h1>{{ result.thirddPrize}}$</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                            <div class="col-md-12">
+                                                You sold {{ result.totalSold}} tickets
+                                                <br>
+                                                You have {{ result.pot}}$ for next draw
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.container -->
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="box">
+                    <div class="col-lg-12 text-center">
+                        <p><a href="jasmine-test-runner.html">Run Unit Tests</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script data-require="angular.js@*" data-semver="1.3.5" src="https://code.angularjs.org/1.3.5/angular.js"></script>
+        <script src="app.js"></script>
+    </body>
+</html>
