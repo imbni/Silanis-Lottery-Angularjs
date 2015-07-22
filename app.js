@@ -16,8 +16,10 @@ angular.module('app', [])
             $scope.Lottery = {
                 purchase: function (item) {
                     console.log(item);
+                    //check if the username field is empty
                     if (document.getElementById("userName").value != "") {
                         $scope.errorMessage = "";
+                        //ask to check if user already exists
                         if (this.checkUser(item.userName)) {
                             $scope.people.push(item.userName);
                             $scope.pot += 10;
@@ -27,6 +29,7 @@ angular.module('app', [])
                         } else {
                             $scope.errorMessage = "User already exists";
                         }
+                        //check if number of tickets are more than 50 
                         if ($scope.people.length == 50) {
                             $scope.full = "yes";
                             $scope.errorMessage = "The pot is full";
@@ -36,17 +39,20 @@ angular.module('app', [])
                     }
                 },
                 draw: function () {
-
+                    //to draw we need at least 4 tickets
                     if ($scope.people.length < 4) {
                         $scope.drawMessage = "Drawing is not possible because you didn't sell enough tickets";
                     } else {
                         $scope.loading = true;
                         $scope.drawMessage = "";
+                        //calculating the prizes
                         totalPrize = $scope.pot / 2;
                         firstPrize = Math.round((totalPrize * 75) / 100);
                         secondPrize = Math.round((totalPrize * 15) / 100);
                         thirddPrize = Math.round((totalPrize * 10) / 100);
+                        //ask to select winners randomly
                         ranks = this.rand();
+                        //set out put variables to show the result
                         $scope.pot = $scope.pot - (firstPrize + secondPrize + thirddPrize);
                         $scope.result["winner1"] = $scope.people[ranks[0]];
                         $scope.result["winner2"] = $scope.people[ranks[1]];
@@ -65,6 +71,7 @@ angular.module('app', [])
                     }
                 },
                 checkUser: function (userName) {
+                    //check if user already exists
                     for (var i = 0; i < $scope.people.length; i++) {
                         if ($scope.people[i] == userName) {
                             return false;
@@ -73,6 +80,7 @@ angular.module('app', [])
                     return true;
                 },
                 rand: function () {
+                    //generate an array with random values
                     rands = [];
                     while (rands.length < 3) {
                         var x = Math.floor((Math.random() * $scope.people.length) + 0);
@@ -89,6 +97,7 @@ angular.module('app', [])
                     return rands;
                 }
             };
+            //init
             $scope.modeChange("home");
 
         });
