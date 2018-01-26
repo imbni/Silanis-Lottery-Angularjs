@@ -97,8 +97,7 @@ angular.module('app', [])
                     return rands;
                 }
             };
-            //init
+            //init 2018
             $scope.modeChange("home");
-
         });
         
